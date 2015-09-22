@@ -1,0 +1,1 @@
+# gson-type-adapter
