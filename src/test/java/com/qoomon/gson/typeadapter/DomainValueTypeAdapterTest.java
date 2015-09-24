@@ -1,6 +1,5 @@
 package com.qoomon.gson.typeadapter;
 
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -45,7 +44,6 @@ public class DomainValueTypeAdapterTest {
         assertThat(json, is("100001"));
 
     }
-
 
     public static class BankAccountNumber extends DV<Integer> {
 
