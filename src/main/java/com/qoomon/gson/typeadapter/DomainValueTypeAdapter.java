@@ -47,7 +47,7 @@ public class DomainValueTypeAdapter implements JsonSerializer<DV>, JsonDeseriali
 
     private Class<?> getValueType(Class<? extends DV> dvType) {
         Class<?> valueType = valueTypeCache.get(dvType);
-        ;
+        
         if (valueType == null) {
             while (valueType == null && dvType != null) {
                 if (dvType.getSuperclass().equals(DV.class)) {
