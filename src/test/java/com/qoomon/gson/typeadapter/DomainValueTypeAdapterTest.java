@@ -1,7 +1,8 @@
 package com.qoomon.gson.typeadapter;
 
 
-import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class DomainValueTypeAdapterTest {
         BankAccountNumber bankAccount = gson.fromJson(json, BankAccountNumber.class);
 
         // THEN
-        assertThat(bankAccount.value()).isEqualTo(100001);
+        assertThat(bankAccount.value(), is(100001));
     }
 
     @Test
@@ -41,7 +42,7 @@ public class DomainValueTypeAdapterTest {
         String json = gson.toJson(bankAccount);
 
         // THEN
-        assertThat(json).isEqualTo("100001");
+        assertThat(json, is("100001"));
 
     }
 
