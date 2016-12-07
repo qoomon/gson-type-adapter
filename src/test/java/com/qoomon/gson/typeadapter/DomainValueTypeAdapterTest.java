@@ -1,20 +1,19 @@
 package com.qoomon.gson.typeadapter;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.qoomon.domainvalue.type.DV;
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.*;
+import static org.junit.Assert.*;
 
 /**
  * Created by b.brodersen on 22/09/15.
  */
 public class DomainValueTypeAdapterTest {
 
-    private Gson gson = new GsonBuilder()
+    Gson gson = new GsonBuilder()
             .registerTypeHierarchyAdapter(DV.class, new DomainValueTypeAdapter())
             .setPrettyPrinting()
             .create();
@@ -23,41 +22,48 @@ public class DomainValueTypeAdapterTest {
     public void deserialize() throws Exception {
 
         // GIVEN
-        String json = "100001";
+        String json = "{\n  \"dv\": 123\n}";
 
         // WHEN
-        BankAccountNumber bankAccount = gson.fromJson(json, BankAccountNumber.class);
+        TestObject testObject = gson.fromJson(json, TestObject.class);
 
         // THEN
-        assertThat(bankAccount.value(), is(100001));
+        assertThat(testObject.dv.value(), is(123));
     }
 
     @Test
     public void serialize() throws Exception {
         // GIVEN
-        BankAccountNumber bankAccount = BankAccountNumber.of(100001);
+        TestObject testDv = new TestObject(TestDv.of(123));
 
         // WHEN
-        String json = gson.toJson(bankAccount);
+        String json = gson.toJson(testDv);
 
         // THEN
-        assertThat(json, is("100001"));
-
+        assertThat(json, is("{\n  \"dv\": 123\n}"));
     }
 
-    public static class BankAccountNumber extends DV<Integer> {
+    public static class TestObject {
 
-        protected BankAccountNumber(Integer value) {
+        final TestDv dv;
+
+        public TestObject(TestDv dv) {
+            this.dv = dv;
+        }
+    }
+
+    public static class TestDv extends DV<Integer> {
+
+        protected TestDv(Integer value) {
             super(value);
         }
 
         public static boolean isValid(Integer value) {
-            return DV.isValid(value) &&
-                    value > 100_000;
+            return DV.isValid(value);
         }
 
-        public static BankAccountNumber of(Integer value) {
-            return new BankAccountNumber(value);
+        public static  TestDv of(Integer value) {
+            return new TestDv(value);
         }
     }
 }
