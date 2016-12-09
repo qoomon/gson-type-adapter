@@ -13,7 +13,7 @@ public class DomainValueTypeAdapter implements JsonSerializer<DV<?>>, JsonDeseri
     @Override
     @SuppressWarnings("unchecked")
     public DV<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-        Type targetValueType = GenericsUtil.getGenericType(typeOfT);
+        Type targetValueType = GenericsUtil.getTypeParameters(DV.class, typeOfT).get(0);
         Object value = context.deserialize(json, targetValueType);
         return DV.of((Class<? extends DV<Object>>) typeOfT, value);
     }

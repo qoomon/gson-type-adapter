@@ -12,7 +12,7 @@ public class OptionalTypeAdapter implements JsonDeserializer<Optional<?>>, JsonS
 
     @Override
     public Optional<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-        Type targetValueType = GenericsUtil.getGenericType(typeOfT);
+        Type targetValueType = GenericsUtil.getTypeParameters(Optional.class,typeOfT).get(0);
         Object value = context.deserialize(json, targetValueType);
         return Optional.ofNullable(value);
     }
