@@ -3,8 +3,6 @@ package com.qoomon.gson.typeadapter;
 import org.junit.Test;
 
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static org.junit.Assert.*;
@@ -15,14 +13,8 @@ import static org.junit.Assert.*;
 public class GenericsUtilTest {
 
     @Test
-    public void getGenericType() throws Exception {
+    public void getTypeParameters() throws Exception {
         // Given
-
-
-        Type genericSuperclass = TestGenericObject.class.getGenericSuperclass();
-        System.out.println(genericSuperclass.getTypeName());
-
-        Optional<String> optional = Optional.empty();
 
         // When
         Type genericType = GenericsUtil.getTypeParameters(Callable.class, TestGenericObject.class).get(0);
@@ -30,6 +22,30 @@ public class GenericsUtilTest {
         // Then
 
         assertTrue(genericType.equals(String.class));
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getTypeParameters_THROW_exception_WHEN_base_class_is_not_generic() throws Exception {
+        // Given
+
+        // When
+        Type genericType = GenericsUtil.getTypeParameters(Object.class, Object.class).get(0);
+
+        // Then
+        fail();
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getTypeParameters_THROW_exception_WHEN_child_type_does_not_extend_base_class() throws Exception {
+        // Given
+
+        // When
+        Type genericType = GenericsUtil.getTypeParameters(Callable.class, Object.class).get(0);
+
+        // Then
+        fail();
 
     }
 

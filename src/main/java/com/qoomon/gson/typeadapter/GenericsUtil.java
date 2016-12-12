@@ -23,16 +23,33 @@ public class GenericsUtil {
      * @return a list of the raw classes for the actual type arguments.
      */
     public static <T> List<Type> getTypeParameters(final Class<T> baseClass, final Class<? extends T> childClass) {
-        return getTypeParameters(baseClass, childClass.getGenericSuperclass());
+        return getTypeParameters(baseClass, (Type) childClass);
     }
 
     public static List<Type> getTypeParameters(final Class<?> baseClass, final Type childType) {
 
+        if (baseClass.getTypeParameters().length <= 0) {
+            throw new IllegalArgumentException(baseClass + " needs to be generic.");
+        }
+
+        List<Type> typeParameters = findTypeParameters(baseClass, childType);
+
+        if (typeParameters.isEmpty()) {
+            throw new IllegalArgumentException(childType + " needs to extend " + baseClass);
+        }
+
+        return typeParameters;
+
+    }
+
+    private static List<Type> findTypeParameters(final Class<?> baseClass, final Type childType) {
+
         if (childType instanceof Class<?>) {
             Class<?> childClass = (Class<?>) childType;
+
             // super class
             {
-                List<Type> result = getTypeParameters(baseClass, childClass.getGenericSuperclass());
+                List<Type> result = findTypeParameters(baseClass, childClass.getGenericSuperclass());
                 if (!result.isEmpty()) {
                     return result;
                 }
@@ -41,7 +58,7 @@ public class GenericsUtil {
             // interfaces
             Type[] genericInterfaces = childClass.getGenericInterfaces();
             for (Type genericInterface : genericInterfaces) {
-                List<Type> result = getTypeParameters(baseClass, genericInterface);
+                List<Type> result = findTypeParameters(baseClass, genericInterface);
                 if (!result.isEmpty()) {
                     return result;
                 }
@@ -53,11 +70,9 @@ public class GenericsUtil {
             return Arrays.asList(childParameterizedType.getActualTypeArguments());
         } else if (childType instanceof GenericArrayType) {
             GenericArrayType childGenericArrayType = (GenericArrayType) childType;
-            return getTypeParameters(baseClass, childGenericArrayType.getGenericComponentType());
+            return findTypeParameters(baseClass, childGenericArrayType.getGenericComponentType());
         } else {
-//            throw new IllegalArgumentException("Can't find base class " + baseClass);
             return Collections.emptyList();
         }
-
     }
 }
